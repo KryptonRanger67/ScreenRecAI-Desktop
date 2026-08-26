@@ -377,6 +377,168 @@ npm run build:linux
 ```
 
 
+## 🧪 Running Tests
+
+This project uses several quality assurance tools to ensure code quality and consistency. While there are currently no unit tests, the following commands help maintain code standards:
+
+### Code Quality Checks
+
+#### Type Checking
+
+Verify TypeScript types across the entire codebase:
+
+```bash
+# Check all TypeScript files
+npm run typecheck
+
+# Check only main process (Node.js) files
+npm run typecheck:node
+
+# Check only renderer process (web) files
+npm run typecheck:web
+```
+
+**What it does:** Ensures all TypeScript code is properly typed and catches type errors before runtime.
+
+#### Linting
+
+Check code for potential errors and style issues:
+
+```bash
+npm run lint
+```
+
+**What it does:** 
+- Runs ESLint with caching for faster subsequent runs
+- Checks for code quality issues, potential bugs, and style violations
+- Enforces React best practices and hooks rules
+- Uses the project's ESLint configuration from `eslint.config.mjs`
+
+#### Code Formatting
+
+Ensure consistent code style across the project:
+
+```bash
+npm run format
+```
+
+**What it does:**
+- Runs Prettier to automatically format all code files
+- Applies consistent formatting rules from `.prettierrc.yaml`
+- Formats TypeScript, JavaScript, JSON, and other supported files
+- Respects `.prettierignore` for excluded files
+
+### Pre-Commit Checklist
+
+Before committing changes, run these commands to ensure code quality:
+
+```bash
+# 1. Format code
+npm run format
+
+# 2. Check for linting issues
+npm run lint
+
+# 3. Verify TypeScript types
+npm run typecheck
+
+# 4. Build the project
+npm run build
+```
+
+### Continuous Integration
+
+The project uses GitHub Actions for automated quality checks:
+
+- **On Push/PR**: Runs build and type checking
+- **On Release**: Creates platform-specific builds
+- **Artifacts**: Available in the Actions tab for 30 days
+
+### Testing Python Components
+
+The Python audio extraction script can be tested manually:
+
+```bash
+# Test Python setup
+python setup.py
+
+# Verify Python dependencies
+pip list | grep -E "whisper|SpeechRecognition|pydub|torch|numpy"
+
+# Test audio extraction (requires a video file)
+python audio_extractor.py path/to/video.webm
+```
+
+### Manual Testing
+
+For end-to-end testing of the application:
+
+1. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+2. **Test recording functionality:**
+   - Select a screen source
+   - Start recording
+   - Stop recording
+   - Verify video is saved
+
+3. **Test transcript generation:**
+   - Record a video with audio
+   - Click "Extract Transcript"
+   - Verify transcript and summary are generated
+
+4. **Test AI summarization (requires Ollama):**
+   - Ensure Ollama is running: `ollama serve`
+   - Generate a transcript
+   - Verify AI summary is created
+
+### Build Verification
+
+Test the production build before releasing:
+
+```bash
+# Build without packaging
+npm run build:unpack
+
+# Test the built application
+# The unpacked app will be in the dist/ directory
+```
+
+### Common Issues During Testing
+
+#### Type Errors
+
+If you encounter TypeScript errors:
+- Check that all dependencies are installed: `npm install`
+- Clear the TypeScript cache: `rm -rf node_modules/.cache`
+- Restart your IDE/editor
+
+#### Linting Errors
+
+If ESLint reports errors:
+- Many issues can be auto-fixed: `npm run lint -- --fix`
+- Check `eslint.config.mjs` for project-specific rules
+- Ensure you're using the correct ESLint version
+
+#### Build Errors
+
+If the build fails:
+- Ensure all dependencies are installed
+- Check that Python and FFmpeg are properly set up
+- Review the error output for missing files or configuration issues
+
+### Future Testing Plans
+
+We're planning to add:
+- ✅ Unit tests for utility functions
+- ✅ Integration tests for IPC handlers
+- ✅ E2E tests for recording workflows
+- ✅ Automated testing in CI/CD pipeline
+
+Contributions to improve test coverage are welcome!
+
 ## 🐛 Troubleshooting
 
 ### Common Issues
