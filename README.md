@@ -1,5 +1,6 @@
 # ScreenRecAI-Desktop – Screen Recorder with Local AI Transcripts \& Summaries
 
+<!-- Ryan wuz not here -->
 ![Application Icon](./resources/icon.png)
 An open-source desktop screen recorder built with Electron, React, and TypeScript. Capture your screen, save videos locally, and auto-generate transcripts and AI summaries using Ollama — all offline, privacy-first, and fully customizable.
 
