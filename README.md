@@ -380,7 +380,26 @@ npm run build:linux
 
 ## 🧪 Running Tests
 
-This project uses several quality assurance tools to ensure code quality and consistency. While there are currently no unit tests, the following commands help maintain code standards:
+This project uses several quality assurance tools to ensure code quality and consistency.
+
+### Quick Reference
+
+| Command | Purpose | When to Use |
+| :-- | :-- | :-- |
+| `npm run typecheck` | Check TypeScript types | Before committing |
+| `npm run lint` | Check code quality | Before committing |
+| `npm run format` | Auto-format code | Before committing |
+| `npm run build` | Build the project | Before releasing |
+| `npm run dev` | Start dev server | During development |
+
+### Running All Quality Checks
+
+Run all checks before committing your changes:
+
+```bash
+# Run all checks in sequence
+npm run format && npm run lint && npm run typecheck && npm run build
+```
 
 ### Code Quality Checks
 
@@ -401,6 +420,12 @@ npm run typecheck:web
 
 **What it does:** Ensures all TypeScript code is properly typed and catches type errors before runtime.
 
+**Example output:**
+```
+✓ Main process types are valid
+✓ Renderer process types are valid
+```
+
 #### Linting
 
 Check code for potential errors and style issues:
@@ -414,6 +439,11 @@ npm run lint
 - Checks for code quality issues, potential bugs, and style violations
 - Enforces React best practices and hooks rules
 - Uses the project's ESLint configuration from `eslint.config.mjs`
+
+**Auto-fix issues:**
+```bash
+npm run lint -- --fix
+```
 
 #### Code Formatting
 
@@ -429,6 +459,11 @@ npm run format
 - Formats TypeScript, JavaScript, JSON, and other supported files
 - Respects `.prettierignore` for excluded files
 
+**Check formatting without changing files:**
+```bash
+npx prettier --check .
+```
+
 ### Pre-Commit Checklist
 
 Before committing changes, run these commands to ensure code quality:
@@ -443,7 +478,7 @@ npm run lint
 # 3. Verify TypeScript types
 npm run typecheck
 
-# 4. Build the project
+# 4. Build the project (optional but recommended)
 npm run build
 ```
 
@@ -455,6 +490,11 @@ The project uses GitHub Actions for automated quality checks:
 - **On Release**: Creates platform-specific builds
 - **Artifacts**: Available in the Actions tab for 30 days
 
+**View CI status:**
+- Visit the [Actions tab](https://github.com/LinuxDevil/ScreenRecAI-Desktop/actions)
+- Check the status of your pull request
+- Download build artifacts if needed
+
 ### Testing Python Components
 
 The Python audio extraction script can be tested manually:
@@ -463,48 +503,83 @@ The Python audio extraction script can be tested manually:
 # Test Python setup
 python setup.py
 
-# Verify Python dependencies
+# Verify Python dependencies are installed
 pip list | grep -E "whisper|SpeechRecognition|pydub|torch|numpy"
 
 # Test audio extraction (requires a video file)
 python audio_extractor.py path/to/video.webm
 ```
 
+**Expected output:**
+```
+Audio extracted successfully to: path/to/audio.wav
+```
+
 ### Manual Testing
 
 For end-to-end testing of the application:
 
-1. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
+#### 1. Start Development Server
 
-2. **Test recording functionality:**
-   - Select a screen source
-   - Start recording
-   - Stop recording
-   - Verify video is saved
+```bash
+npm run dev
+```
 
-3. **Test transcript generation:**
-   - Record a video with audio
-   - Click "Extract Transcript"
-   - Verify transcript and summary are generated
+#### 2. Test Recording Functionality
 
-4. **Test AI summarization (requires Ollama):**
-   - Ensure Ollama is running: `ollama serve`
-   - Generate a transcript
-   - Verify AI summary is created
+- Select a screen source from the dropdown
+- Click "Start Recording"
+- Perform some actions on screen
+- Click "Stop Recording"
+- Verify video is saved to `Desktop/captured-videos/`
+
+#### 3. Test Transcript Generation
+
+- Record a video with audio (speak clearly)
+- Click "Extract Transcript"
+- Wait for processing (may take a few minutes)
+- Verify transcript file is created
+- Check that the transcript text is accurate
+
+#### 4. Test AI Summarization (Requires Ollama)
+
+**Prerequisites:**
+```bash
+# Ensure Ollama is running
+ollama serve
+
+# Verify model is available
+ollama list
+```
+
+**Test steps:**
+- Generate a transcript from a recording
+- Wait for AI summary generation
+- Verify summary file is created
+- Check that summary captures key points
 
 ### Build Verification
 
 Test the production build before releasing:
 
 ```bash
-# Build without packaging
+# Build without packaging (faster)
 npm run build:unpack
 
 # Test the built application
 # The unpacked app will be in the dist/ directory
+```
+
+**Platform-specific builds:**
+```bash
+# Build for Windows
+npm run build:win
+
+# Build for macOS
+npm run build:mac
+
+# Build for Linux
+npm run build:linux
 ```
 
 ### Common Issues During Testing
@@ -512,33 +587,92 @@ npm run build:unpack
 #### Type Errors
 
 If you encounter TypeScript errors:
-- Check that all dependencies are installed: `npm install`
-- Clear the TypeScript cache: `rm -rf node_modules/.cache`
-- Restart your IDE/editor
+
+```bash
+# Reinstall dependencies
+npm install
+
+# Clear TypeScript cache
+rm -rf node_modules/.cache
+
+# Restart your IDE/editor
+```
+
+**Common causes:**
+- Missing type definitions
+- Outdated dependencies
+- Incorrect import paths
 
 #### Linting Errors
 
 If ESLint reports errors:
-- Many issues can be auto-fixed: `npm run lint -- --fix`
-- Check `eslint.config.mjs` for project-specific rules
-- Ensure you're using the correct ESLint version
+
+```bash
+# Auto-fix many issues
+npm run lint -- --fix
+
+# Check specific files
+npx eslint src/main/index.ts
+```
+
+**Common causes:**
+- Unused variables
+- Missing return types
+- React hooks dependency issues
 
 #### Build Errors
 
 If the build fails:
-- Ensure all dependencies are installed
-- Check that Python and FFmpeg are properly set up
-- Review the error output for missing files or configuration issues
 
-### Future Testing Plans
+```bash
+# Ensure all dependencies are installed
+npm install
 
-We're planning to add:
-- ✅ Unit tests for utility functions
-- ✅ Integration tests for IPC handlers
-- ✅ E2E tests for recording workflows
-- ✅ Automated testing in CI/CD pipeline
+# Check Python and FFmpeg setup
+python --version
+ffmpeg -version
 
-Contributions to improve test coverage are welcome!
+# Review error output for details
+npm run build 2>&1 | tee build.log
+```
+
+**Common causes:**
+- Missing dependencies
+- Python/FFmpeg not found
+- TypeScript errors
+- Configuration issues
+
+#### Python/FFmpeg Issues
+
+If audio extraction fails:
+
+```bash
+# Verify Python setup
+python audio_extractor.py --help
+
+# Check FFmpeg installation
+ffmpeg -version
+
+# Test with a sample video
+python audio_extractor.py test-video.webm
+```
+
+### Test Coverage Status
+
+**Current Status:**
+- ✅ TypeScript type checking
+- ✅ ESLint code quality checks
+- ✅ Prettier code formatting
+- ✅ Manual end-to-end testing
+- ✅ CI/CD automated builds
+
+**Future Plans:**
+- ⏳ Unit tests for utility functions
+- ⏳ Integration tests for IPC handlers
+- ⏳ E2E tests with Playwright/Spectron
+- ⏳ Automated test coverage reporting
+
+**Contributions welcome!** We're actively looking to improve test coverage. See [Contributing](#-contributing) for guidelines.
 
 ## 🐛 Troubleshooting
 
@@ -637,7 +771,7 @@ We welcome contributions! Here's how to get started:
 1. **Fork the repository**
 2. **Create a feature branch**: `git checkout -b feature-name`
 3. **Make your changes**
-4. **Test thoroughly**
+4. **Test thoroughly** (see [Running Tests](#-running-tests))
 5. **Submit a pull request**
 
 ### Development Guidelines
@@ -646,6 +780,7 @@ We welcome contributions! Here's how to get started:
 - Use meaningful commit messages
 - Test on multiple platforms
 - Update documentation as needed
+- Run all quality checks before committing
 
 
 ## 📄 License
