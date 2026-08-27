@@ -22,7 +22,7 @@ An open-source desktop screen recorder built with Electron, React, and TypeScrip
 
 ### Main Application Interface
 
-![Main Application Interface](./1.png)
+![Main Application Interface](./thisisatest.png)
 
 ### Recording in Progress
 
