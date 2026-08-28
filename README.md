@@ -867,5 +867,10 @@ scripts\release.bat 1.0.1
 - ✅ **GitHub Actions** - Automated builds and releases
 - ✅ **Cross-platform Support** - Windows and macOS builds
 - ✅ **AI Integration** - Local AI-powered summarization
+
+---
+
+this is a test for the evaluation
+
 ---
 **Made with ❤️ by [LinuxDevil](https://github.com/LinuxDevil)**
